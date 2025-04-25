@@ -1,26 +1,36 @@
 from flask import Flask, request, jsonify
-import openai
-import os
+from flask_cors import CORS
+import google.generativeai as genai
 
 app = Flask(__name__)
+CORS(app)
 
-# Load your OpenAI API key from an environment variable or secret management service
-openai.api_key = os.getenv("AIzaSyC_Z4P0a4iqwA9Win51W-BQICYCnHdnBqM")
+# Configure the Gemini API
+GEMINI_API_KEY = 'AIzaSyC_Z4P0a4iqwA9Win51W-BQICYCnHdnBqM'
+genai.configure(api_key=GEMINI_API_KEY)
+
+# Create a model instance
+model = genai.GenerativeModel('gemini-pro')
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    data = request.get_json()
-    user_message = data.get("message", "")
-
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": user_message}]
-        )
-        reply = response.choices[0].message.content.strip()
-        return jsonify({"reply": reply})
+        data = request.json
+        message = data.get('message')
+        
+        if not message:
+            return jsonify({'error': 'No message provided'}), 400
+
+        # Generate response using Gemini
+        response = model.generate_content(message)
+        
+        return jsonify({
+            'response': response.text
+        })
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"Error: {str(e)}")  # For debugging
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5000) 
