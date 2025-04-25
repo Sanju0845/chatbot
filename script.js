@@ -24,30 +24,18 @@ async function handleSendMessage() {
     chatInput.value = '';
 
     try {
-        // Call Gemini API
-        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', {
+        // Update the URL to match your Flask server
+        const response = await fetch('http://127.0.0.1:5000/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${GEMINI_API_KEY}`
+                'Access-Control-Allow-Origin': '*'  // Add this for local development
             },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: message
-                    }]
-                }]
-            })
+            body: JSON.stringify({ message: message })
         });
 
         const data = await response.json();
-        
-        if (data.candidates && data.candidates[0].content.parts[0].text) {
-            const botResponse = data.candidates[0].content.parts[0].text;
-            addMessage(botResponse);
-        } else {
-            addMessage('Sorry, I encountered an error. Please try again.');
-        }
+        addMessage(data.response);
     } catch (error) {
         console.error('Error:', error);
         addMessage('Sorry, I encountered an error. Please try again.');
