@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
     <link rel="stylesheet" href="style.css">
-    <title>Mental Health Support Chatbot</title>
 </head>
 <body>
-    <div class="chatBot">
+    <div class="chat-container">
         <header>
-            <h2>Mental Health Chatbot</h2>
-            <span id="cross" onclick="cancel()">X</span>
+            <h2>AI Assistant</h2>
         </header>
         <ul class="chatbox"></ul>
         <div class="chat-input">
-            <textarea placeholder="Type your message here..."></textarea>
-            <button id="sendBTN">Send</button>
+            <textarea placeholder="Enter your message..." spellcheck="false"></textarea>
+            <div class="buttons">
+                <button id="sendBTN">Send</button>
+                <button onclick="cancel()">Clear Chat</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
